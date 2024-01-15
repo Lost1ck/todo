@@ -1,5 +1,6 @@
-import SelectAll, { SelectActive, SelectCompleted, ClearAllCompleted } from '../TasksFilter.jsx';
+import PropTypes from 'prop-types';
 
+import SelectAll, { SelectActive, SelectCompleted, ClearAllCompleted } from '../TasksFilter.jsx';
 const Footer = ({ taskState }) => {
   const { counterOfTasks } = taskState;
 
@@ -17,6 +18,12 @@ const Footer = ({ taskState }) => {
       <ClearAllCompleted taskState={taskState} />
     </footer>
   );
+};
+
+Footer.propTypes = {
+  taskState: PropTypes.shape({
+    counterOfTasks: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default Footer;

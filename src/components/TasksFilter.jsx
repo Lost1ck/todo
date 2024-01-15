@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const SelectAll = ({ taskState }) => {
   const { filter, setFilter } = taskState;
 
@@ -10,6 +12,13 @@ const SelectAll = ({ taskState }) => {
   );
 };
 
+SelectAll.propTypes = {
+  taskState: PropTypes.shape({
+    filter: PropTypes.string.isRequired,
+    setFilter: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
 export const SelectActive = ({ taskState }) => {
   const { filter, setFilter } = taskState;
 
@@ -20,6 +29,13 @@ export const SelectActive = ({ taskState }) => {
       </button>
     </li>
   );
+};
+
+SelectActive.propTypes = {
+  taskState: PropTypes.shape({
+    filter: PropTypes.string.isRequired,
+    setFilter: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export const SelectCompleted = ({ taskState }) => {
@@ -38,6 +54,13 @@ export const SelectCompleted = ({ taskState }) => {
   );
 };
 
+SelectCompleted.propTypes = {
+  taskState: PropTypes.shape({
+    filter: PropTypes.string.isRequired,
+    setFilter: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
 export const ClearAllCompleted = ({ taskState }) => {
   const { clearAllcompleted } = taskState;
   return (
@@ -45,6 +68,12 @@ export const ClearAllCompleted = ({ taskState }) => {
       Clear completed
     </button>
   );
+};
+
+ClearAllCompleted.propTypes = {
+  taskState: PropTypes.shape({
+    clearAllcompleted: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default SelectAll;

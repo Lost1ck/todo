@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const TaskList = ({ taskState }) => {
   const { setTasks, formatDistanceToNow, toggleTaskCompletion, completedTasks, filter, tasks, handleDeleteTask } =
@@ -99,6 +100,24 @@ const TaskList = ({ taskState }) => {
       ))}
     </>
   );
+};
+
+TaskList.propTypes = {
+  taskState: PropTypes.shape({
+    setTasks: PropTypes.func.isRequired,
+    formatDistanceToNow: PropTypes.func.isRequired,
+    toggleTaskCompletion: PropTypes.func.isRequired,
+    completedTasks: PropTypes.arrayOf(PropTypes.number).isRequired,
+    filter: PropTypes.string.isRequired,
+    tasks: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        text: PropTypes.string.isRequired,
+        createdAt: PropTypes.instanceOf(Date).isRequired,
+      })
+    ).isRequired,
+    handleDeleteTask: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default TaskList;

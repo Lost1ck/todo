@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const TaskForm = ({ taskState }) => {
   const { newTask, handleInputChange, handleKeyPress } = taskState;
   return (
@@ -13,6 +15,14 @@ const TaskForm = ({ taskState }) => {
       />
     </form>
   );
+};
+
+TaskForm.propTypes = {
+  taskState: PropTypes.shape({
+    newTask: PropTypes.string.isRequired,
+    handleInputChange: PropTypes.func.isRequired,
+    handleKeyPress: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default TaskForm;

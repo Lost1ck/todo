@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import PropTypes from 'prop-types';
 
 const UseTaskState = () => {
   const [tasks, setTasks] = useState([]);
@@ -62,6 +63,29 @@ const UseTaskState = () => {
     handleInputChange,
     handleKeyPress,
   };
+};
+
+UseTaskState.propTypes = {
+  setTasks: PropTypes.func.isRequired,
+  formatDistanceToNow: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
+  setFilter: PropTypes.func.isRequired,
+  clearAllcompleted: PropTypes.func.isRequired,
+  counterOfTasks: PropTypes.func.isRequired,
+  toggleTaskCompletion: PropTypes.func.isRequired,
+  completedTasks: PropTypes.arrayOf(PropTypes.number).isRequired,
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+      createdAt: PropTypes.instanceOf(Date).isRequired,
+    })
+  ).isRequired,
+  newTask: PropTypes.string.isRequired,
+  handleAddTask: PropTypes.func.isRequired,
+  handleDeleteTask: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  handleKeyPress: PropTypes.func.isRequired,
 };
 
 export default UseTaskState;
