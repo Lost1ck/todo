@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+import TodoTimer from './hooks/Timer.jsx';
+
 const TaskList = ({ taskState }) => {
   const { setTasks, formatDistanceToNow, toggleTaskCompletion, completedTasks, filter, tasks, handleDeleteTask } =
     taskState;
@@ -82,6 +84,7 @@ const TaskList = ({ taskState }) => {
                   onChange={() => {}}
                 />
                 <label htmlFor={task.id}>
+                  <TodoTimer />
                   <span className="description">{task.text}</span>
                   <span className="created">
                     created{' '}
@@ -94,6 +97,8 @@ const TaskList = ({ taskState }) => {
                 <button className="icon icon-edit" onClick={() => startEditingTask(task.id, task.text)} />
                 <button label="text" className="icon icon-destroy" onClick={() => handleDeleteTask(task.id)} />
               </>
+              // <button className="icon icon-play"></button>
+              // <button className="icon icon-pause"></button>
             )}
           </div>
         </li>
