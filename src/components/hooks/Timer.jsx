@@ -9,7 +9,6 @@ class TodoItem extends Component {
     };
     this.timerId = null;
 
-    // Привязка контекста
     this.updateTimer = this.updateTimer.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
