@@ -84,8 +84,8 @@ const TaskList = ({ taskState }) => {
                   onChange={() => {}}
                 />
                 <label htmlFor={task.id}>
+                  <span className="title">{task.text}</span>
                   <TodoTimer />
-                  <span className="description">{task.text}</span>
                   <span className="created">
                     created{' '}
                     {formatDistanceToNow(new Date(task.createdAt), {
@@ -97,8 +97,6 @@ const TaskList = ({ taskState }) => {
                 <button className="icon icon-edit" onClick={() => startEditingTask(task.id, task.text)} />
                 <button label="text" className="icon icon-destroy" onClick={() => handleDeleteTask(task.id)} />
               </>
-              // <button className="icon icon-play"></button>
-              // <button className="icon icon-pause"></button>
             )}
           </div>
         </li>

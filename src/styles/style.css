@@ -170,7 +170,7 @@ body {
 
 .todo-list li {
     position: relative;
-    font-size: 14px;
+    font-size: 24px;
     border-bottom: 1px solid #ededed;
     color: gray;
 }
@@ -427,10 +427,10 @@ html .clear-completed:active {
 	text-decoration: underline;
 }
 
-/*
-	Hack to remove background from Mobile Safari.
-	Can't use it globally since it destroys checkboxes in Firefox
-*/
+.created {
+	font-size: 14px
+}
+
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	.toggle-all,
 	.todo-list li .toggle {

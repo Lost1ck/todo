@@ -5,14 +5,18 @@ const TaskForm = ({ taskState }) => {
   return (
     <form onKeyDown={handleKeyPress} className="header">
       <h1>Todos</h1>
-      <input
-        type="text"
-        value={newTask}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyPress}
-        className="new-todo"
-        placeholder="What needs to be done?"
-      />
+      <div className="new-todo-form">
+        <input
+          type="text"
+          value={newTask}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyPress}
+          className="new-todo"
+          placeholder="Task"
+        />
+        <input className="new-todo new-todo-form__timer" placeholder="Min" autoFocus />
+        <input className="new-todo new-todo-form__timer" placeholder="Sec" autoFocus />
+      </div>
     </form>
   );
 };

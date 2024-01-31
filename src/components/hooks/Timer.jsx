@@ -47,8 +47,7 @@ class TodoItem extends Component {
   formatTime(time) {
     const seconds = Math.floor((time / 1000) % 60);
     const minutes = Math.floor((time / 60000) % 60);
-    const hours = Math.floor(time / 3600000);
-    return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    return `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
   }
 
   render() {
