@@ -1,1 +1,6 @@
-https://todos-beta-sand.vercel.app/ Site
+# Todo with Timer
+
+# https://todotimer-gold.vercel.app/
+
+
+Timer на классе 
