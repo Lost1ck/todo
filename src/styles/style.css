@@ -314,10 +314,6 @@ body {
 	content: '▶';
 }
 
-.todo-list li .edit {
-	display: none;
-}
-
 .todo-list li.editing:last-child {
 	margin-bottom: -1px;
 }
@@ -450,4 +446,11 @@ html .clear-completed:active {
 	.filters {
 		bottom: 10px;
 	}
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0; /* Убираем отступы */
 }

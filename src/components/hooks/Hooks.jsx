@@ -7,12 +7,25 @@ const UseTaskState = () => {
   const [newTask, setNewTask] = useState('');
   const [completedTasks, setCompletedTasks] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [minutes, setMinutes] = useState('');
+  const [seconds, setSeconds] = useState('');
 
   const handleAddTask = () => {
-    if (newTask.trim()) {
-      setTasks([...tasks, { id: Date.now(), text: newTask, createdAt: new Date() }]);
+    if (newTask.trim() && minutes.trim() && seconds.trim()) {
+      setTasks([
+        ...tasks,
+        {
+          id: Date.now(),
+          text: newTask,
+          createdAt: new Date(),
+          duration: parseInt(minutes, 10) * 60 + parseInt(seconds, 10),
+        },
+      ]);
+      setMinutes('');
+      setSeconds('');
       setNewTask('');
     }
+    console.log(minutes, seconds);
   }; // добавление в массив такски
 
   const clearAllcompleted = () => {
@@ -22,6 +35,17 @@ const UseTaskState = () => {
   }; // удаление всех завершенных задач
 
   const counterOfTasks = () => tasks.length - completedTasks.length; // количество активных тасок
+
+  const handleSecondsChange = (e) => {
+    const eTarget = e.target.value;
+    eTarget > 59 ? '' : setSeconds(eTarget);
+  }; // ввод.отображение
+
+  const handleMinutesChange = (e) => {
+    const eTarget = e.target.value;
+
+    eTarget > 59 ? '' : setMinutes(eTarget);
+  }; // ввод.отображение
 
   const handleInputChange = (e) => {
     setNewTask(e.target.value);
@@ -48,6 +72,10 @@ const UseTaskState = () => {
   }; // переключение состояния таски
 
   return {
+    handleSecondsChange,
+    handleMinutesChange,
+    minutes,
+    seconds,
     setTasks,
     formatDistanceToNow,
     filter,

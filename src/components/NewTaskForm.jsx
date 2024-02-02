@@ -1,23 +1,31 @@
 import PropTypes from 'prop-types';
 
 const TaskForm = ({ taskState }) => {
-  const { newTask, handleInputChange, handleKeyPress } = taskState;
+  const { newTask, handleInputChange, handleKeyPress, handleMinutesChange, handleSecondsChange, minutes, seconds } =
+    taskState;
   return (
-    <form onKeyDown={handleKeyPress} className="header">
+    <header className="header">
       <h1>Todos</h1>
-      <div className="new-todo-form">
+      <form onKeyDown={handleKeyPress} className="new-todo-form">
+        <input type="text" value={newTask} onChange={handleInputChange} className="new-todo" placeholder="Task" />
         <input
-          type="text"
-          value={newTask}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyPress}
-          className="new-todo"
-          placeholder="Task"
+          type="number"
+          inputMode="decimal"
+          value={minutes}
+          onChange={handleMinutesChange}
+          className="new-todo-form__timer"
+          placeholder="Min"
         />
-        <input className="new-todo new-todo-form__timer" placeholder="Min" autoFocus />
-        <input className="new-todo new-todo-form__timer" placeholder="Sec" autoFocus />
-      </div>
-    </form>
+        <input
+          type="number"
+          inputMode="decimal"
+          value={seconds}
+          onChange={handleSecondsChange}
+          className="new-todo-form__timer"
+          placeholder="Sec"
+        />
+      </form>
+    </header>
   );
 };
 

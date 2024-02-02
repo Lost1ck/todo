@@ -1,69 +1,129 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import TodoTimer from './hooks/Timer.jsx';
+class TaskList extends Component {
+  constructor(props) {
+    super(props);
 
-const TaskList = ({ taskState }) => {
-  const { setTasks, formatDistanceToNow, toggleTaskCompletion, completedTasks, filter, tasks, handleDeleteTask } =
-    taskState;
-
-  const [editingTaskId, setEditingTaskId] = useState(null);
-  const [editedTaskText, setEditedTaskText] = useState('');
-
-  const activeFilter = tasks.filter((task) => !completedTasks.includes(task.id));
-  const completedTask = tasks.filter((task) => completedTasks.includes(task.id));
-
-  let filteredTasks;
-
-  switch (filter) {
-    case 'active':
-      filteredTasks = activeFilter;
-      break;
-    case 'completed':
-      filteredTasks = completedTask;
-      break;
-    default:
-      filteredTasks = tasks;
-      break;
+    this.state = {
+      editingTaskId: null,
+      editedTaskText: '',
+      runningTaskId: null,
+      runningTimers: {},
+    };
   }
 
-  const startEditingTask = (taskId, taskText) => {
-    setEditingTaskId(taskId);
-    setEditedTaskText(taskText);
+  formatTime = (duration) => {
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+    return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  const cancelEditingTask = () => {
-    setEditingTaskId(null);
-    setEditedTaskText('');
+  handlePlay = (taskId) => {
+    const { runningTimers } = this.state;
+    this.setState({
+      runningTimers: {
+        ...runningTimers,
+        [taskId]: true,
+      },
+    });
   };
 
-  const saveEditedTask = (taskId) => {
-    if (editedTaskText.trim()) {
+  handlePause = (taskId) => {
+    const { runningTimers } = this.state;
+    this.setState({
+      runningTimers: {
+        ...runningTimers,
+        [taskId]: false,
+      },
+    });
+  };
+
+  componentDidMount() {
+    this.intervalId = setInterval(() => {
+      const { runningTimers } = this.state;
+      const { tasks, setTasks } = this.props.taskState;
+
       const updatedTasks = tasks.map((task) => {
-        if (task.id === taskId) {
-          return { ...task, text: editedTaskText };
+        const { id, duration } = task;
+        if (runningTimers[id] && duration > 0) {
+          return { ...task, duration: duration - 1 };
         }
         return task;
       });
-      setTasks(updatedTasks);
-      setEditingTaskId(null);
-      setEditedTaskText('');
-    }
-  };
 
-  return (
-    <>
-      {filteredTasks.map((task) => (
-        <li key={task.id} className={completedTasks.includes(task.id) ? 'completed' : null}>
-          <div className="view">
-            {editingTaskId === task.id ? (
-              <form>
+      setTasks(updatedTasks);
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+
+  render() {
+    const { taskState } = this.props;
+    const { editingTaskId, editedTaskText, runningTimers } = this.state;
+    const { toggleTaskCompletion, completedTasks, filter, tasks, handleDeleteTask } = taskState;
+
+    const activeFilter = tasks.filter((task) => !completedTasks.includes(task.id));
+    const completedTask = tasks.filter((task) => completedTasks.includes(task.id));
+
+    let filteredTasks;
+
+    switch (filter) {
+      case 'active':
+        filteredTasks = activeFilter;
+        break;
+      case 'completed':
+        filteredTasks = completedTask;
+        break;
+      default:
+        filteredTasks = tasks;
+        break;
+    }
+
+    const startEditingTask = (taskId, taskText) => {
+      this.setState({
+        editingTaskId: taskId,
+        editedTaskText: taskText,
+      });
+    };
+
+    const cancelEditingTask = () => {
+      this.setState({
+        editingTaskId: null,
+        editedTaskText: '',
+      });
+    };
+
+    const saveEditedTask = (taskId) => {
+      if (editedTaskText.trim()) {
+        const updatedTasks = tasks.map((task) => {
+          if (task.id === taskId) {
+            return { ...task, text: editedTaskText };
+          }
+          return task;
+        });
+        this.props.taskState.setTasks(updatedTasks);
+        this.setState({
+          editingTaskId: null,
+          editedTaskText: '',
+        });
+      }
+    };
+
+    return (
+      <>
+        {filteredTasks.map((task) => (
+          <li key={task.id} className={completedTasks.includes(task.id) ? 'completed' : null}>
+            <div className="view">
+              {editingTaskId === task.id ? (
                 <input
                   className="edit"
                   type="text"
                   autoFocus
                   value={editedTaskText}
-                  onChange={(e) => setEditedTaskText(e.target.value)}
+                  onChange={(e) => this.setState({ editedTaskText: e.target.value })}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       saveEditedTask(task.id);
@@ -72,38 +132,50 @@ const TaskList = ({ taskState }) => {
                     }
                   }}
                 />
-              </form>
-            ) : (
-              <>
-                <input
-                  onClick={() => toggleTaskCompletion(task.id)}
-                  id={task.id}
-                  className="toggle"
-                  type="checkbox"
-                  checked={completedTasks.includes(task.id)}
-                  onChange={() => {}}
-                />
-                <label htmlFor={task.id}>
-                  <span className="title">{task.text}</span>
-                  <TodoTimer />
-                  <span className="created">
-                    created{' '}
-                    {formatDistanceToNow(new Date(task.createdAt), {
-                      includeSeconds: true,
-                      addSuffix: true,
-                    })}
-                  </span>
-                </label>
-                <button className="icon icon-edit" onClick={() => startEditingTask(task.id, task.text)} />
-                <button label="text" className="icon icon-destroy" onClick={() => handleDeleteTask(task.id)} />
-              </>
-            )}
-          </div>
-        </li>
-      ))}
-    </>
-  );
-};
+              ) : (
+                <>
+                  <input
+                    onClick={() => toggleTaskCompletion(task.id)}
+                    id={task.id}
+                    className="toggle"
+                    type="checkbox"
+                    checked={completedTasks.includes(task.id)}
+                    onChange={() => {}}
+                  />
+                  <label htmlFor={task.id}>
+                    <span className="title">{task.text}</span>
+                    <span className="description">
+                      <button
+                        className="icon icon-play"
+                        onClick={() => this.handlePlay(task.id)}
+                        disabled={runningTimers[task.id]}
+                      ></button>
+                      <button
+                        className="icon icon-pause"
+                        onClick={() => this.handlePause(task.id)}
+                        disabled={!runningTimers[task.id]}
+                      ></button>
+                      <span>{this.formatTime(task.duration)}</span>
+                    </span>
+                    <span className="description">
+                      created{' '}
+                      {this.props.taskState.formatDistanceToNow(new Date(task.createdAt), {
+                        includeSeconds: true,
+                        addSuffix: true,
+                      })}
+                    </span>
+                  </label>
+                  <button className="icon icon-edit" onClick={() => startEditingTask(task.id, task.text)} />
+                  <button label="text" className="icon icon-destroy" onClick={() => handleDeleteTask(task.id)} />
+                </>
+              )}
+            </div>
+          </li>
+        ))}
+      </>
+    );
+  }
+}
 
 TaskList.propTypes = {
   taskState: PropTypes.shape({
