@@ -1,65 +1,55 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-class TodoItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isRunning: false,
-      elapsedTime: 0,
+const TodoItem = () => {
+  const [isRunning, setIsRunning] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const timerId = useRef(null);
+
+  const updateTimer = useCallback((startTime) => {
+    const frameFunc = () => {
+      setElapsedTime(Date.now() - startTime);
+      timerId.current = requestAnimationFrame(frameFunc);
     };
-    this.timerId = null;
+    return frameFunc;
+  }, []);
 
-    this.updateTimer = this.updateTimer.bind(this);
-    this.startTimer = this.startTimer.bind(this);
-    this.stopTimer = this.stopTimer.bind(this);
-    this.formatTime = this.formatTime.bind(this);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isRunning && !prevState.isRunning) {
-      const startTime = Date.now() - this.state.elapsedTime;
-      this.timerId = requestAnimationFrame(this.updateTimer(startTime));
+  useEffect(() => {
+    if (isRunning) {
+      const startTime = Date.now() - elapsedTime;
+      timerId.current = requestAnimationFrame(updateTimer(startTime));
     }
-  }
 
-  componentWillUnmount() {
-    cancelAnimationFrame(this.timerId);
-  }
-
-  updateTimer(startTime) {
-    var _this = this;
-    return function () {
-      _this.setState({ elapsedTime: Date.now() - startTime }, function () {
-        _this.timerId = requestAnimationFrame(_this.updateTimer(startTime));
-      });
+    return () => {
+      if (timerId.current) {
+        cancelAnimationFrame(timerId.current);
+      }
     };
-  }
+  }, [isRunning, elapsedTime, updateTimer]);
 
-  startTimer() {
-    this.setState({ isRunning: true });
-  }
+  const startTimer = () => {
+    setIsRunning(true);
+  };
 
-  stopTimer() {
-    cancelAnimationFrame(this.timerId);
-    this.setState({ isRunning: false });
-  }
+  const stopTimer = () => {
+    if (timerId.current) {
+      cancelAnimationFrame(timerId.current);
+    }
+    setIsRunning(false);
+  };
 
-  formatTime(time) {
+  const formatTime = (time) => {
     const seconds = Math.floor((time / 1000) % 60);
     const minutes = Math.floor((time / 60000) % 60);
     return `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-  }
+  };
 
-  render() {
-    const { isRunning, elapsedTime } = this.state;
-    return (
-      <span className="description">
-        <button onClick={this.startTimer} disabled={isRunning} className="icon icon-play"></button>
-        <button onClick={this.stopTimer} disabled={!isRunning} className="icon icon-pause"></button>
-        <span>{this.formatTime(elapsedTime)}</span>
-      </span>
-    );
-  }
-}
+  return (
+    <span className="description">
+      <button onClick={startTimer} disabled={isRunning} className="icon icon-play"></button>
+      <button onClick={stopTimer} disabled={!isRunning} className="icon icon-pause"></button>
+      <span>{formatTime(elapsedTime)}</span>
+    </span>
+  );
+};
 
 export default TodoItem;
