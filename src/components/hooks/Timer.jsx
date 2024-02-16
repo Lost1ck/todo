@@ -42,7 +42,6 @@ const TodoItem = () => {
     const minutes = Math.floor((time / 60000) % 60);
     return `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
   };
-
   return (
     <span className="description">
       <button onClick={startTimer} disabled={isRunning} className="icon icon-play"></button>
