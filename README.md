@@ -3,4 +3,4 @@
 # https://todo-timer-tawny.vercel.app/
 
 
-Timer на классе 
+Timer на хуках
